@@ -1,0 +1,44 @@
+title: Member Added To Or Removed From Sensitive Security Group
+id: d1b49443-a98a-4704-920e-332bb0206c3f
+status: experimental
+description: |
+    Detects membership changes on a watch list of sensitive Active Directory groups,
+    covering global, domain-local and universal groups, both security and distribution types.
+references:
+    - https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor
+author: Furkan Altun
+date: 2026-11-23
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1098
+logsource:
+    product: windows
+    service: security
+detection:
+    selection_event:
+        EventID:
+            - 4728
+            - 4729
+            - 4732
+            - 4733
+            - 4746
+            - 4747
+            - 4751
+            - 4752
+            - 4756
+            - 4757
+            - 4761
+            - 4762
+    selection_group:
+        # Replace with the groups that matter in your environment
+        TargetUserName|contains:
+            - 'Domain Admins'
+            - 'Enterprise Admins'
+            - 'Server Admin'
+            - 'Security Admin'
+            - 'Executive'
+    condition: all of selection_*
+falsepositives:
+    - Approved access requests handled by the identity team
+level: medium

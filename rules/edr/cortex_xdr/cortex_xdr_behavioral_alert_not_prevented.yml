@@ -1,0 +1,33 @@
+title: Cortex XDR Behavioural Alert That Was Not Prevented
+id: c00ea9ad-8a93-4139-ae6a-09a2cd5861c0
+status: experimental
+description: |
+    Forwards Cortex XDR behavioural (BIOC) and analytics alerts that were detected but not blocked,
+    and that belong to an incident. Alerts raised by the breach-and-attack-simulation service account
+    are excluded so that scheduled simulations do not open cases.
+author: Furkan Altun
+date: 2026-11-23
+tags:
+    - attack.execution
+    - attack.lateral-movement
+    - attack.exfiltration
+logsource:
+    product: paloalto
+    service: cortex_xdr
+detection:
+    selection:
+        alert_source:
+            - 'XDR BIOC'
+            - 'XDR Analytics'
+            - 'XDR Analytics BIOC'
+    filter_main_prevented:
+        action_pretty|startswith: 'Prevented'
+    filter_main_no_incident:
+        incident_id: null
+    filter_optional_attack_simulation:
+        # Replace with your BAS tool's service account
+        user_name|endswith: '\bas_simulator'
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+falsepositives:
+    - Administrative tools and scripts that resemble attacker behaviour
+level: high

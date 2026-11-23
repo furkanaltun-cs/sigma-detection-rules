@@ -1,0 +1,31 @@
+title: SharePoint Or OneDrive Secure Link Shared With External Recipient
+id: 4f5d5324-47a3-4d00-bd1c-495f7959033c
+status: experimental
+description: |
+    Detects a user adding a recipient outside the organisation's own mail domains to a
+    SharePoint or OneDrive secure sharing link. Most useful when the result is joined with a
+    watch list such as employees in their notice period.
+references:
+    - https://learn.microsoft.com/en-us/purview/audit-log-sharing
+author: Furkan Altun
+date: 2026-11-23
+tags:
+    - attack.exfiltration
+    - attack.t1567.002
+logsource:
+    product: m365
+    service: audit
+detection:
+    selection:
+        Operation: 'AddedToSecureLink'
+    filter_main_internal_domains:
+        # Replace with your own mail domains
+        TargetUserOrGroupName|endswith:
+            - '@example.com'
+            - '@example.onmicrosoft.com'
+    filter_main_empty_recipient:
+        TargetUserOrGroupName: null
+    condition: selection and not 1 of filter_main_*
+falsepositives:
+    - Normal collaboration with customers, partners and suppliers
+level: low

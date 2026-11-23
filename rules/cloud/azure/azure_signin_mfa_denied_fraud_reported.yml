@@ -1,0 +1,25 @@
+title: MFA Prompt Denied And Reported As Fraud By User
+id: cdeaee6d-fd79-46c1-a28d-fa354608f98f
+status: experimental
+description: |
+    Detects a sign-in where the user rejected the MFA prompt and reported it as fraud in the
+    authenticator app. This usually means someone else has the password and is trying to sign in.
+references:
+    - https://learn.microsoft.com/en-us/entra/identity/authentication/howto-mfa-mfasettings
+author: Furkan Altun
+date: 2026-11-23
+tags:
+    - attack.credential-access
+    - attack.t1621
+logsource:
+    product: azure
+    service: signinlogs
+detection:
+    selection:
+        Status.additionalDetails|contains|all:
+            - 'MFA denied'
+            - 'Reported Fraud'
+    condition: selection
+falsepositives:
+    - User pressing the fraud option by mistake
+level: high

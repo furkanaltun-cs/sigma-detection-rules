@@ -1,0 +1,42 @@
+title: QRadar Console Login Failure
+id: 5fb01dfb-c880-4695-92f6-b33b6cd0c1d1
+name: qradar_console_login_failure
+status: experimental
+description: Base rule. Failed login to the QRadar console as recorded in the QRadar audit log. Used by the correlation rule in this file.
+author: Furkan Altun
+date: 2026-11-23
+tags:
+    - attack.credential-access
+    - attack.t1110
+logsource:
+    product: qradar
+    service: audit
+detection:
+    selection:
+        action: 'Login Failed'
+    condition: selection
+falsepositives:
+    - Mistyped passwords
+level: informational
+---
+title: Repeated QRadar Console Login Failures For One User
+id: ff2baad9-18e3-4ef3-a9fe-eb23aa7aa575
+status: experimental
+description: Three or more failed QRadar console logins for the same user within one minute. The SIEM is a high-value target and should be watched like any other privileged system.
+author: Furkan Altun
+date: 2026-11-23
+tags:
+    - attack.credential-access
+    - attack.t1110
+correlation:
+    type: event_count
+    rules:
+        - qradar_console_login_failure
+    group-by:
+        - username
+    timespan: 1m
+    condition:
+        gte: 3
+falsepositives:
+    - Scripts or integrations using an expired credential
+level: medium
