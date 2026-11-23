@@ -31,7 +31,7 @@ All environment-specific values (account names, group names, domains, device pre
 ## Validation
 
 Every push runs `sigma check` and converts all rules, including the correlations, to Splunk SPL
-(`/workflows/validate.yml`).
+(`.github/workflows/validate.yml`).
 
 ```
 pip install sigma-cli
